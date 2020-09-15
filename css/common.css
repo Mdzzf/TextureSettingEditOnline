@@ -1,0 +1,52 @@
+
+/*导航头样式 */
+.frame-header-nav {
+	background: black;
+	height: 100%;
+	width: 100%;
+}
+.frame-header-nav-inner-font {
+	font-size: large;
+	color: white;
+}
+
+.frame-left-nav{
+	background: black;
+	height: 100%;
+	width: 100%;
+}
+
+.frame-left-nav-inner-font{
+	color: white;
+	font-size: large;
+}
+.center-vertical {
+	position:relative;
+	top:50%;
+	transform:translateY(-50%);
+}
+
+.baidu-maps label {
+	max-width: none;
+}
+/* 修改bootstrap弹出框的显示效果 */
+/* .modal-backdrop {
+	opacity: 0 !important;
+	filter: alpha(opacity=0) !important;
+} */
+
+
+.div-width {
+	width: 80%;
+}
+
+.center-vertical {
+	position: relative;
+	top: 50%;
+	transform: translateY(-50%);
+}
+
+
+.margin-top5{
+	margin-top: 5px;
+}
