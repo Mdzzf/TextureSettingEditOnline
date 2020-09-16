@@ -4,6 +4,7 @@
     <list default="true" id="570e58b2-0ce2-4661-9a7a-ad039b73175d" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/js/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.html" beforeDir="false" afterPath="$PROJECT_DIR$/main.html" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -76,6 +77,8 @@
       <workItem from="1600165865505" duration="2504000" />
       <workItem from="1600168409068" duration="7132000" />
       <workItem from="1600223072332" duration="1857000" />
+      <workItem from="1600225106238" duration="26000" />
+      <workItem from="1600225416851" duration="1804000" />
     </task>
     <servers />
   </component>
