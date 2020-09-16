@@ -42,6 +42,7 @@ $(document).ready(function () {
                 //为按钮添加事件,row为ajax返回的单条数据,index为点击的第几行
                 "click .delete": function (e, value, row, index) {
                     $("#excludeFoldersTable").bootstrapTable('removeByUniqueId',row.Folder);
+                    updateXml();
                 },
             },
             formatter: function (value, row, index) {     //把需要创建的按钮封装在函数中
@@ -79,6 +80,7 @@ $(document).ready(function () {
                 //为按钮添加事件,row为ajax返回的单条数据,index为点击的第几行
                 "click .delete": function (e, value, row, index) {
                     $("#appendAlienBodyTypesTable").bootstrapTable('removeByUniqueId',row.AlienBodyType);
+                    updateXml();
                 },
             },
             formatter: function (value, row, index) {     //把需要创建的按钮封装在函数中
@@ -108,6 +110,21 @@ $(document).ready(function () {
             field: 'ExcludeFolders',
             title: 'ExcludeFolders',
             align: "center",
+            formatter: function (value, row, index) {     //把需要创建的按钮封装在函数中
+                if(!isEmpty(value)){
+                    if(value.endsWith(";")){
+                        value=value.substr(0,value.length-1);
+                    }
+                    var str="";
+                    var split=value.split(";");
+                    for (var i = 0; i < split.length; i++) {
+                        str+='<span class="label label-info">'+split[i].trim()+'   <button class="btn btn-link" onclick="deleteFolderLabel(this)"' +
+                            'data-id="{0}" data-folder="{1}">X</button>'.format(row.PackageId,split[i])+'</span>   ';
+                    }
+                    return str;
+                }
+                return "";
+            }
         },{
             visible:false,
             field: 'ExplainText',
@@ -135,6 +152,9 @@ $(document).ready(function () {
         $("#add_package").find('.sure').unbind('click').bind('click',function(){
             var packageId=$("#add_packageId_input").val();
             var folders=$("#add_exclude_folders").val();
+            if(!isEmpty(folders)&&folders.endsWith(";")){
+                folders=folders.substr(0,folders.length-1);
+            }
             if(isEmpty(packageId)){
                 alert('packageId should not empty');
                 return ;
@@ -179,14 +199,36 @@ $(document).ready(function () {
     })
 
 });
+
+function deleteFolderLabel($this){
+    var id=$($this).attr('data-id');
+    var folder=$($this).attr('data-folder');
+    if(!isEmpty(id)){
+        var row=$("#packageTable").bootstrapTable('getRowByUniqueId',id);
+        var excludeFolders=row.ExcludeFolders;
+        var str="";
+        if(!isEmpty(excludeFolders)){
+            var split=excludeFolders.split(";");
+            for(var i=0;i<split.length;i++){
+                if(split[i]!=folder){
+                    str+=split[i]+";"
+                }
+            }
+            str=str.substr(0,str.length-1);
+        }
+        $("#packageTable").bootstrapTable('updateByUniqueId',{
+            id:id,
+            row:{
+                ExcludeFolders:str
+            }
+        })
+    }
+}
 function updateXml(){
     var globalExcludeFolders=$("#excludeFoldersTable").bootstrapTable('getData',false);
     var appendAlienBodyTypes=$("#appendAlienBodyTypesTable").bootstrapTable('getData',false);
     var packages=$("#packageTable").bootstrapTable('getData',false);
 
-    console.log(globalExcludeFolders);
-    console.log(appendAlienBodyTypes);
-    console.log(packages);
     var config='';
     //xml声明
     config+=appendLine(appendSpace('<?xml version="1.0" encoding="UTF-8" standalone="yes"?>',0));
@@ -196,14 +238,18 @@ function updateXml(){
     config+=appendLine(appendSpace('<ExcludeFoldersGobal>',4));
     if(globalExcludeFolders.length>0){
         for(var i=0;i<globalExcludeFolders.length;i++){
-            config+=appendLine(appendSpace(appendXmlText("li",globalExcludeFolders[i].Folder),8));
+            if(!isEmpty(globalExcludeFolders[i].Folder.trim())){
+                config+=appendLine(appendSpace(appendXmlText("li",globalExcludeFolders[i].Folder),8));
+            }
         }
     }
     config+=appendLine(appendSpace('</ExcludeFoldersGobal>',4));
     config+=appendLine(appendSpace('<AppendGobal>',4));
     if(appendAlienBodyTypes.length>0){
         for(var i=0;i<appendAlienBodyTypes.length;i++){
-            config+=appendLine(appendSpace(appendXmlText("li",appendAlienBodyTypes[i].AlienBodyType),8));
+            if(!isEmpty(appendAlienBodyTypes[i].AlienBodyType.trim())){
+                config+=appendLine(appendSpace(appendXmlText("li",appendAlienBodyTypes[i].AlienBodyType),8));
+            }
         }
     }
     config+=appendLine(appendSpace('</AppendGobal>',4));
@@ -218,7 +264,9 @@ function updateXml(){
                 if(array.length>0){
                     config+=appendLine(appendSpace('<excludeFolders>',12));
                     for(var j=0;j<array.length;j++){
-                        config+=appendLine(appendSpace(appendXmlText("li",array[j]),16));
+                        if(!isEmpty(array[j].trim())){
+                            config+=appendLine(appendSpace(appendXmlText("li",array[j]),16));
+                        }
                     }
                     config+=appendLine(appendSpace('</excludeFolders>',12));
                 }
@@ -263,3 +311,11 @@ function download(filename, text) {
     document.body.removeChild(element);
 }
 
+
+String.prototype.format = function() {
+    if (arguments.length == 0)
+        return this;
+    for (var s = this, i = 0; i < arguments.length; i++)
+        s = s.replace(new RegExp("\\{" + i + "\\}", "g"), arguments[i]);
+    return s;
+};
